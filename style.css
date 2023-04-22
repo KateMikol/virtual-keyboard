@@ -1,0 +1,33 @@
+body{
+  width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  
+}
+.keyboard {
+  display: flex;
+  flex-wrap: wrap;
+  width: 740px;
+  gap:10px;
+  justify-content: space-between;
+}
+
+.text__area{
+  width: 740px;
+  height: 100px;
+}
+
+.keyboard__item{
+  width: max-content;
+  min-width: 40px;
+  height: 40px;
+  background-color: cadetblue;
+  display: flex;
+  justify-content: center;
+}
+
+.keyboard__item_space{
+  width: 410px;
+}
