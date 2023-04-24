@@ -28,6 +28,18 @@ const arrru = [
   'Ctrl', 'Win', 'Alt', ' ', 'Alt', 'Ctrl', '←', '↓', '→',
 ];
 
+const letters = [
+  'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'a', 's', 'd',
+  'f', 'g', 'h', 'j', 'k', 'l', 'z', 'x', 'c', 'v', 'b', 'n', 'm',
+  'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D',
+  'F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C', 'V', 'B', 'N', 'M',
+  'Й', 'Ц', 'У', 'К', 'Е', 'Н', 'Г', 'Ш', 'Щ', 'З', 'Х', 'Ъ', 'Ф',
+  'Ы', 'В', 'А', 'П', 'Р', 'О', 'Л', 'Д', 'Ж', 'Э', 'Я', 'Ч', 'С',
+  'М', 'И', 'Т', 'Ь', 'Б', 'Ю', 'й', 'ц', 'у', 'к', 'е', 'н', 'г',
+  'ш', 'щ', 'з', 'х', 'ъ', 'ф', 'ы', 'в', 'а', 'п', 'р', 'о', 'л',
+  'д', 'ж', 'э', 'я', 'ч', 'с', 'м', 'и', 'т', 'ь', 'б', 'ю',
+];
+
 let keyboardLang = 'arrEN';
 
 const exceptionItems = ['Tab', 'Backspace', 'DEL', 'Caps Lock', 'ENTER', 'Shift',
@@ -42,7 +54,7 @@ main.className = '';
 const textArea = document.createElement('textarea');
 textArea.className = 'text__area';
 const keyboard = document.createElement('section');
-keyboard.className = 'keyboard';
+keyboard.className = 'keyboard en';
 const title = document.createElement('h1');
 const titleText = document.createTextNode('Virtual Keyboard');
 title.appendChild(titleText);
@@ -58,6 +70,10 @@ function generateKeyboardButtons(arr) {
     const keyboardItem = document.createElement('div');
     if (arr[i] === ' ') {
       keyboardItem.className = 'keyboard__item keyboard__item_space';
+    } else if (arr[i] === 'Caps Lock') {
+      keyboardItem.className = 'keyboard__item keyboard__item_CapsLock';
+    } else if (arr[i] === 'ENTER') {
+      keyboardItem.className = 'keyboard__item keyboard__item_enter';
     } else {
       keyboardItem.className = 'keyboard__item';
     }
@@ -80,11 +96,40 @@ function getValueOfClickedItem(e) {
   return undefined;
 }
 
+function getItemValue(item) {
+  const keyboardItem = item.querySelector('p').innerHTML;
+  return keyboardItem;
+}
+
+function switchToUpperCase() {
+  // const clickedKeyboardItem = getClickedItem(e);
+  const arrOfKeyBoardItems = document.querySelectorAll('.keyboard__item');
+  if (document.querySelector('.keyboard__item_CapsLock').classList.contains('clicked')) {
+    for (let i = 0; i < arrOfKeyBoardItems.length; i++) {
+      const itemValue = getItemValue(arrOfKeyBoardItems[i]);
+      if (letters.includes(itemValue)) {
+        arrOfKeyBoardItems[i].querySelector('p').innerHTML = itemValue.toUpperCase();
+      }
+    }
+  }
+}
+
+function switchTolowerCase() {
+  const arrOfKeyBoardItems = document.querySelectorAll('.keyboard__item');
+  if (!document.querySelector('.keyboard__item_CapsLock').classList.contains('clicked')) {
+    for (let i = 0; i < arrOfKeyBoardItems.length; i++) {
+      const itemValue = getItemValue(arrOfKeyBoardItems[i]);
+      if (letters.includes(itemValue)) {
+        arrOfKeyBoardItems[i].querySelector('p').innerHTML = itemValue.toLowerCase();
+      }
+    }
+  }
+}
+
 function delPreviousClickedItem() {
   const arrOfClickedItems = document.querySelectorAll('.clicked');
   for (let i = 0; i < arrOfClickedItems.length; i++) {
     const valueOfItemWithClickedClass = arrOfClickedItems[i].querySelector('p').innerHTML;
-    console.log(valueOfItemWithClickedClass);
     if (valueOfItemWithClickedClass !== 'Caps Lock') {
       arrOfClickedItems[i].classList.remove('clicked');
     }
@@ -93,16 +138,20 @@ function delPreviousClickedItem() {
 
 function addClassOfClickedItem(e) {
   const clickedKeyboardItem = e.target.closest('.keyboard__item');
-  const clickedCapsLock = getValueOfClickedItem(e);
-  if (clickedKeyboardItem && (clickedCapsLock !== 'Caps Lock')) {
+  const clickedItemValue = getValueOfClickedItem(e);
+  if (clickedKeyboardItem && (clickedItemValue !== 'Caps Lock') && (clickedItemValue !== 'Alt') && clickedItemValue !== 'Shift') {
     clickedKeyboardItem.classList.add('clicked');
     setTimeout(delPreviousClickedItem, 250);
   }
-  if (clickedCapsLock === 'Caps Lock') {
+  if (clickedItemValue === 'Caps Lock') {
     clickedKeyboardItem.classList.toggle('clicked');
   }
-  console.log(clickedCapsLock);
-  return;
+  if (clickedItemValue === 'Alt') {
+    clickedKeyboardItem.classList.add('clicked');
+  }
+  if (clickedItemValue === 'Shift') {
+    clickedKeyboardItem.classList.add('clicked');
+  }
 }
 
 function getCursor() {
@@ -153,17 +202,15 @@ function onKeyboardClickHandler(e) {
     textArea.value = textFromTextArea;
     textArea.setSelectionRange(cursorPosition + tabValue.length, cursorPosition + tabValue.length);
   }
-  // Clicked SHIFT
-  if (clickedItemValue === 'Shift') {
-    console.log('shift');
-  }
 
-  addClassOfClickedItem(e);  
+  addClassOfClickedItem(e);
+  switchToUpperCase();
+  switchTolowerCase();
 }
 
 keyboard.addEventListener('click', onKeyboardClickHandler);
 
-// document.addEventListener('keydown', (e) => {
-//   console.log(e.repeat);
-//   console.log(e.code);
+//  document.addEventListener('keydown', (e) => {
+//    console.log(e.repeat);
+//    console.log(e.code);
 // });

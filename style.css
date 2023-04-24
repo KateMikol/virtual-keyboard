@@ -9,8 +9,8 @@ body{
 .keyboard {
   display: flex;
   flex-wrap: wrap;
-  width: 740px;
-  gap:10px;
+  width: 750px;
+  gap:9px;
   justify-content: space-between;
 }
 
@@ -36,5 +36,10 @@ body{
 }
 
 .keyboard__item_space{
-  width: 410px;
+  width: 390px;
+}
+
+.keyboard__item_CapsLock,
+.keyboard__item_enter{
+  width: 90px
 }
