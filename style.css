@@ -19,8 +19,6 @@ body{
   height: 100px;
 }
 
-
-
 .keyboard__item{
   width: max-content;
   min-width: 40px;
@@ -31,15 +29,31 @@ body{
   border-radius: 3px;
   cursor: pointer;
 }
+
+.keyboard__item:hover{
+  box-shadow: rgba(36, 119, 123, 0.25) 0px 54px 55px, 
+              rgba(36, 119, 123, 0.12) 0px -12px 30px,
+               rgba(36, 119, 123, 0.12) 0px 4px 6px,
+                rgba(36, 119, 123, 0.17) 0px 12px 13px,
+                 rgba(36, 119, 123, 0.09) 0px -3px 5px;
+}
+
 .clicked{
-  background: rgb(59, 114, 202);
+  background: rgb(36, 90, 123);
+  box-shadow: rgba(36, 119, 123, 0.25) 0px 54px 55px, 
+              rgba(36, 119, 123, 0.12) 0px -12px 30px,
+               rgba(36, 119, 123, 0.12) 0px 4px 6px,
+                rgba(36, 119, 123, 0.17) 0px 12px 13px,
+                 rgba(36, 119, 123, 0.09) 0px -3px 5px;
+  
 }
 
 .keyboard__item_space{
-  width: 390px;
+  width: 350px;
 }
 
 .keyboard__item_CapsLock,
-.keyboard__item_enter{
+.keyboard__item_enter,
+.keyboard__item_shift{
   width: 90px
 }
