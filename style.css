@@ -29,6 +29,7 @@ body{
   display: flex;
   justify-content: center;
   border-radius: 3px;
+  cursor: pointer;
 }
 .clicked{
   background: rgb(59, 114, 202);
