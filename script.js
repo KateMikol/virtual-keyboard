@@ -1,23 +1,8 @@
-const arrEN = [
-  '`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace',
-  'Tab', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '[', ']', '\\', 'DEL',
-  'Caps Lock', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', '\'', 'ENTER',
-  'Shift', '\\', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '/', '↑', 'Shift',
-  'Ctrl', 'Win', 'Alt', ' ', 'Alt', 'Ctrl', '←', '↓', '→',
-];
-
 const arren = [
   '`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace',
   'Tab', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '{', '}', '\\', 'DEL',
   'Caps Lock', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ':', '"', 'ENTER',
   'Shift', '\\', 'z', 'x', 'c', 'v', 'b', 'n', 'm', '<', '>', '?', '↑', 'Shift',
-  'Ctrl', 'Win', 'Alt', ' ', 'Alt', 'Ctrl', '←', '↓', '→',
-];
-const arrRU = [
-  '`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace',
-  'Tab', 'Й', 'Ц', 'У', 'К', 'Е', 'Н', 'Г', 'Ш', 'Щ', 'З', 'Х', 'Ъ', '\\', 'DEL',
-  'Caps Lock', 'Ф', 'Ы', 'В', 'А', 'П', 'Р', 'О', 'Л', 'Д', 'Ж', 'Э', 'ENTER',
-  'Shift', '\\', 'Я', 'Ч', 'С', 'М', 'И', 'Т', 'Ь', 'Б', 'Ю', ',', '↑', 'Shift',
   'Ctrl', 'Win', 'Alt', ' ', 'Alt', 'Ctrl', '←', '↓', '→',
 ];
 const arrru = [
@@ -57,13 +42,15 @@ const keyboard = document.createElement('section');
 keyboard.className = 'keyboard en';
 const title = document.createElement('h1');
 const titleText = document.createTextNode('Virtual Keyboard');
-title.appendChild(titleText);
-header.appendChild(title);
 
+header.appendChild(title);
+title.appendChild(titleText);
 document.body.appendChild(header);
 document.body.appendChild(main);
 main.appendChild(textArea);
 main.appendChild(keyboard);
+
+const queueFromClickedItems = [];
 
 function generateKeyboardButtons(arr) {
   for (let i = 0; i < arr.length; i++) {
@@ -126,6 +113,24 @@ function switchTolowerCase() {
   }
 }
 
+function changeLang() {
+  const arrOfKeyBoardItems = document.querySelectorAll('.keyboard__item');
+  const keyboardElem = document.querySelector('.keyboard');
+  if (keyboardElem.classList.contains('en')) {
+    keyboardElem.classList.remove('en');
+    keyboardElem.classList.add('ru');
+    for (let i = 0; i < arrOfKeyBoardItems.length; i++) {
+      arrOfKeyBoardItems[i].querySelector('p').innerHTML = arrru[i];
+    }
+  } else {
+    keyboardElem.classList.remove('ru');
+    keyboardElem.classList.add('en');
+    for (let i = 0; i < arrOfKeyBoardItems.length; i++) {
+      arrOfKeyBoardItems[i].querySelector('p').innerHTML = arren[i];
+    }
+  }
+}
+
 function delPreviousClickedItem() {
   const arrOfClickedItems = document.querySelectorAll('.clicked');
   for (let i = 0; i < arrOfClickedItems.length; i++) {
@@ -160,6 +165,9 @@ function getCursor() {
 
 function onKeyboardClickHandler(e) {
   const clickedItemValue = getValueOfClickedItem(e);
+  
+  queueFromClickedItems.push(clickedItemValue);
+
   if (!clickedItemValue) {
     return;
   }
@@ -206,6 +214,13 @@ function onKeyboardClickHandler(e) {
   addClassOfClickedItem(e);
   switchToUpperCase();
   switchTolowerCase();
+
+  if (queueFromClickedItems.length > 2) {
+    queueFromClickedItems.shift();
+  }
+  if (queueFromClickedItems[0] === 'Alt' && queueFromClickedItems[1] === 'Shift') {
+    changeLang();
+  }
 }
 
 keyboard.addEventListener('click', onKeyboardClickHandler);
