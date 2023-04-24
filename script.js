@@ -9,7 +9,22 @@ const arrru = [
   'ё', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace',
   'Tab', 'й', 'ц', 'у', 'к', 'е', 'н', 'г', 'ш', 'щ', 'з', 'х', 'ъ', '\\', 'DEL',
   'Caps Lock', 'ф', 'ы', 'в', 'а', 'п', 'р', 'о', 'л', 'д', 'ж', 'э', 'ENTER',
-  'Shift', 'я', 'ч', 'с', 'м', 'и', 'т', 'ь', 'б', 'ю', ',', '↑', 'Shift',
+  'Shift', 'я', 'ч', 'с', 'м', 'и', 'т', 'ь', 'б', 'ю', '.', '↑', 'Shift',
+  'Ctrl', 'Win', 'Alt', ' ', 'Alt', 'Ctrl', '←', '↓', '→',
+];
+
+const shiftru = [
+  'Ё', '!', '"', '№', ';', '%', ':', '?', '*', '(', ')', '_', '+', 'Backspace',
+  'Tab', 'Й', 'Ц', 'У', 'К', 'Е', 'Н', 'Г', 'Ш', 'Щ', 'З', 'Х', 'Ъ', '\\', 'DEL',
+  'Caps Lock', 'Ф', 'Ы', 'В', 'А', 'П', 'Р', 'О', 'Л', 'Д', 'Ж', 'Э', 'ENTER',
+  'Shift', 'Я', 'Ч', 'С', 'М', 'И', 'Т', 'Ь', 'Б', 'Ю', ',', '↑', 'Shift',
+  'Ctrl', 'Win', 'Alt', ' ', 'Alt', 'Ctrl', '←', '↓', '→',
+];
+const shiften = [
+  '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', 'Backspace',
+  'Tab', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '{', '}', '\\', 'DEL',
+  'Caps Lock', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':', '"', 'ENTER',
+  'Shift', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<', '>', '?', '↑', 'Shift',
   'Ctrl', 'Win', 'Alt', ' ', 'Alt', 'Ctrl', '←', '↓', '→',
 ];
 
@@ -64,7 +79,7 @@ document.body.appendChild(main);
 main.appendChild(textArea);
 main.appendChild(keyboard);
 
-const queueFromClickedItems = [];
+let queueFromClickedItems = [];
 let queueFromPressedKeys = [];
 
 function generateKeyboardButtons(arr) {
@@ -78,6 +93,8 @@ function generateKeyboardButtons(arr) {
       keyboardItem.className = 'keyboard__item keyboard__item_enter';
     } else if (arr[i] === 'Shift') {
       keyboardItem.className = 'keyboard__item keyboard__item_shift';
+    } else if (arr[i] === 'Alt') {
+      keyboardItem.className = 'keyboard__item keyboard__item_alt';
     } else {
       keyboardItem.className = 'keyboard__item';
     }
@@ -94,58 +111,79 @@ generateKeyboardButtons(getCurrentLang() === 'en' ? arren : arrru);
 function getValueOfClickedItem(e) {
   const targetKeyboardItem = e.target.closest('.keyboard__item');
   if (targetKeyboardItem) {
-    const valueOfClickedItem = targetKeyboardItem.querySelector('p').innerHTML;
+    const valueOfClickedItem = targetKeyboardItem.querySelector('p').textContent;
     return valueOfClickedItem;
   }
   return undefined;
 }
 
 function getItemValue(item) {
-  const keyboardItem = item.querySelector('p').innerHTML;
+  const keyboardItem = item.querySelector('p').textContent;
   return keyboardItem;
 }
 
+const arrOfKeyBoardItems = document.querySelectorAll('.keyboard__item');
+
 function switchToUpperCase() {
   // const clickedKeyboardItem = getClickedItem(e);
-  const arrOfKeyBoardItems = document.querySelectorAll('.keyboard__item');
   if (document.querySelector('.keyboard__item_CapsLock').classList.contains('clicked')) {
     for (let i = 0; i < arrOfKeyBoardItems.length; i++) {
       const itemValue = getItemValue(arrOfKeyBoardItems[i]);
       if (letters.includes(itemValue)) {
-        arrOfKeyBoardItems[i].querySelector('p').innerHTML = itemValue.toUpperCase();
+        arrOfKeyBoardItems[i].querySelector('p').textContent = itemValue.toUpperCase();
       }
     }
   }
 }
 
 function switchTolowerCase() {
-  const arrOfKeyBoardItems = document.querySelectorAll('.keyboard__item');
   if (!document.querySelector('.keyboard__item_CapsLock').classList.contains('clicked')) {
     for (let i = 0; i < arrOfKeyBoardItems.length; i++) {
       const itemValue = getItemValue(arrOfKeyBoardItems[i]);
       if (letters.includes(itemValue)) {
-        arrOfKeyBoardItems[i].querySelector('p').innerHTML = itemValue.toLowerCase();
+        arrOfKeyBoardItems[i].querySelector('p').textContent = itemValue.toLowerCase();
       }
     }
   }
 }
 
+function pressedShift() {
+  document.querySelector('.keyboard__item_shift').classList.add('clicked');
+  for (let i = 0; i < arrOfKeyBoardItems.length; i++) {
+    if (getCurrentLang() === 'en') {
+      arrOfKeyBoardItems[i].querySelector('p').textContent = shiften[i];
+    } else {
+      arrOfKeyBoardItems[i].querySelector('p').textContent = shiftru[i];
+    }
+  }
+}
+
+function unactivateShift() {
+  document.querySelector('.keyboard__item_shift').classList.remove('clicked');
+  for (let i = 0; i < arrOfKeyBoardItems.length; i++) {
+    if (getCurrentLang() === 'en') {
+      arrOfKeyBoardItems[i].querySelector('p').textContent = arren[i];
+    } else {
+      arrOfKeyBoardItems[i].querySelector('p').textContent = arrru[i];
+    }
+  }
+}
+
 function changeLang() {
-  const arrOfKeyBoardItems = document.querySelectorAll('.keyboard__item');
   const keyboardElem = document.querySelector('.keyboard');
   if (keyboardElem.classList.contains('en')) {
     keyboardElem.classList.remove('en');
     keyboardElem.classList.add('ru');
     localStorage.setItem('lang', 'ru');
     for (let i = 0; i < arrOfKeyBoardItems.length; i++) {
-      arrOfKeyBoardItems[i].querySelector('p').innerHTML = arrru[i];
+      arrOfKeyBoardItems[i].querySelector('p').textContent = arrru[i];
     }
   } else {
     keyboardElem.classList.remove('ru');
     keyboardElem.classList.add('en');
     localStorage.setItem('lang', 'en');
     for (let i = 0; i < arrOfKeyBoardItems.length; i++) {
-      arrOfKeyBoardItems[i].querySelector('p').innerHTML = arren[i];
+      arrOfKeyBoardItems[i].querySelector('p').textContent = arren[i];
     }
   }
 }
@@ -153,8 +191,8 @@ function changeLang() {
 function delPreviousClickedItem() {
   const arrOfClickedItems = document.querySelectorAll('.clicked');
   for (let i = 0; i < arrOfClickedItems.length; i++) {
-    const valueOfItemWithClickedClass = arrOfClickedItems[i].querySelector('p').innerHTML;
-    if (valueOfItemWithClickedClass !== 'Caps Lock') {
+    const valueOfItemWithClickedClass = arrOfClickedItems[i].querySelector('p').textContent;
+    if (valueOfItemWithClickedClass !== 'Caps Lock' && valueOfItemWithClickedClass !== 'Shift') {
       arrOfClickedItems[i].classList.remove('clicked');
     }
   }
@@ -188,9 +226,14 @@ function onKeyboardClickHandler(e) {
   if (queueFromClickedItems.length > 2) {
     queueFromClickedItems.shift();
   }
-  if (queueFromClickedItems[0] === 'Alt' && queueFromClickedItems[1] === 'Shift') {
+  if ((queueFromClickedItems[0] === 'Alt' && queueFromClickedItems[1] === 'Shift')
+  || (queueFromClickedItems[1] === 'Alt' && queueFromClickedItems[0] === 'Shift')) {
+    addClassOfClickedItem(e);
     changeLang();
-    // delPreviousClickedItem();
+    unactivateShift();
+    document.querySelector('.keyboard__item_alt').classList.remove('clicked');
+    queueFromClickedItems = [];
+    return;
   }
 
   if (!clickedItemValue) {
@@ -236,9 +279,20 @@ function onKeyboardClickHandler(e) {
     textArea.setSelectionRange(cursorPosition + tabValue.length, cursorPosition + tabValue.length);
   }
 
-  addClassOfClickedItem(e);
-  switchToUpperCase();
-  switchTolowerCase();
+  if (clickedItemValue === 'Shift') {
+    if (document.querySelector('.keyboard__item_shift').classList.contains('clicked')) {
+      unactivateShift();
+    } else {
+      pressedShift();
+    }
+  } else {
+    addClassOfClickedItem(e);
+  }
+
+  //  switchToUpperCase();
+  //  switchTolowerCase();
+
+  // delPreviousClickedItem(); //
 }
 
 keyboard.addEventListener('click', onKeyboardClickHandler);
@@ -257,12 +311,17 @@ document.addEventListener('keydown', (e) => {
 
   const arrayOfKeyBoardItems = document.querySelectorAll('.keyboard__item');
   const k = keyCodes.indexOf(e.code);
-  arrayOfKeyBoardItems[k].classList.add('clicked');
-  setTimeout(delPreviousClickedItem, 250);
+  const pressedItem = arrayOfKeyBoardItems[k].querySelector('p').textContent;
+
+  if (pressedItem === 'Caps Lock' || pressedItem === 'Shift') {
+    arrayOfKeyBoardItems[k].classList.toggle('clicked');
+  } else {
+    arrayOfKeyBoardItems[k].classList.add('clicked');
+    setTimeout(delPreviousClickedItem, 250);
+  }
 
   const cursorPosition = getCursor();
   let textFromTextArea = textArea.value;
-  const pressedItem = arrayOfKeyBoardItems[k].querySelector('p').innerHTML;
 
   if (!exceptionItems.includes(pressedItem)) {
     textFromTextArea = textFromTextArea.slice(0, cursorPosition) + pressedItem
@@ -299,5 +358,15 @@ document.addEventListener('keydown', (e) => {
 
     textArea.value = textFromTextArea;
     textArea.setSelectionRange(cursorPosition + tabValue.length, cursorPosition + tabValue.length);
+  }
+  switchToUpperCase();
+  switchTolowerCase();
+  pressedShift();
+});
+
+document.addEventListener('keyup', (e) => {
+  if (e.code === 'ShiftLeft') {
+    document.querySelector('.keyboard__item_shift').classList.remove('clicked');
+    unactivateShift();
   }
 });
