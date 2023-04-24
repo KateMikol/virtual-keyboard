@@ -6,6 +6,30 @@ const arrEN = [
   'Ctrl', 'Win', 'Alt', ' ', 'Alt', 'Ctrl', '←', '↓', '→',
 ];
 
+const arren = [
+  '`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace',
+  'Tab', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '{', '}', '\\', 'DEL',
+  'Caps Lock', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ':', '"', 'ENTER',
+  'Shift', '\\', 'z', 'x', 'c', 'v', 'b', 'n', 'm', '<', '>', '?', '↑', 'Shift',
+  'Ctrl', 'Win', 'Alt', ' ', 'Alt', 'Ctrl', '←', '↓', '→',
+];
+const arrRU = [
+  '`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace',
+  'Tab', 'Й', 'Ц', 'У', 'К', 'Е', 'Н', 'Г', 'Ш', 'Щ', 'З', 'Х', 'Ъ', '\\', 'DEL',
+  'Caps Lock', 'Ф', 'Ы', 'В', 'А', 'П', 'Р', 'О', 'Л', 'Д', 'Ж', 'Э', 'ENTER',
+  'Shift', '\\', 'Я', 'Ч', 'С', 'М', 'И', 'Т', 'Ь', 'Б', 'Ю', ',', '↑', 'Shift',
+  'Ctrl', 'Win', 'Alt', ' ', 'Alt', 'Ctrl', '←', '↓', '→',
+];
+const arrru = [
+  '`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace',
+  'Tab', 'й', 'ц', 'у', 'к', 'е', 'н', 'г', 'ш', 'щ', 'з', 'х', 'ъ', '\\', 'DEL',
+  'Caps Lock', 'ф', 'ы', 'в', 'а', 'п', 'р', 'о', 'л', 'д', 'ж', 'э', 'ENTER',
+  'Shift', '\\', 'я', 'ч', 'с', 'м', 'и', 'т', 'ь', 'б', 'ю', ',', '↑', 'Shift',
+  'Ctrl', 'Win', 'Alt', ' ', 'Alt', 'Ctrl', '←', '↓', '→',
+];
+
+let keyboardLang = 'arrEN';
+
 const exceptionItems = ['Tab', 'Backspace', 'DEL', 'Caps Lock', 'ENTER', 'Shift',
   'Ctrl', 'Win', 'Alt'];
 
@@ -56,6 +80,20 @@ function getValueOfClickedItem(e) {
   return undefined;
 }
 
+function findPreviousClickedItem() {
+  if (document.querySelector('.clicked')) {
+    document.querySelector('.clicked').classList.remove('clicked');
+  }
+}
+
+function addClassOfClickedItem(e) {
+  const clickedKeyboardItem = e.target.closest('.keyboard__item');
+  if (clickedKeyboardItem) {
+    clickedKeyboardItem.classList.add('clicked');
+    return; 
+  }
+}
+
 function getCursor() {
   return textArea.selectionStart;
 }
@@ -74,6 +112,42 @@ function onKeyboardClickHandler(e) {
     textArea.value = textFromTextArea;
     textArea.setSelectionRange(cursorPosition + 1, cursorPosition + 1);
   }
+  if (clickedItemValue === 'ENTER') {
+    const newLine = '\n';
+    textFromTextArea = textFromTextArea.slice(0, cursorPosition) + newLine
+    + textFromTextArea.slice(cursorPosition - 1 + newLine.length);
+
+    textArea.value = textFromTextArea;
+    textArea.setSelectionRange(cursorPosition + 1, cursorPosition + 1);
+  }
+  if (clickedItemValue === 'Backspace') {
+    textFromTextArea = textFromTextArea.slice(0, cursorPosition - 1)
+    + textFromTextArea.slice(cursorPosition);
+
+    textArea.value = textFromTextArea;
+    textArea.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
+  }
+  if (clickedItemValue === 'DEL') {
+    textFromTextArea = textFromTextArea.slice(0, cursorPosition)
+    + textFromTextArea.slice(cursorPosition + 1);
+
+    textArea.value = textFromTextArea;
+    textArea.setSelectionRange(cursorPosition, cursorPosition);
+  }
+  if (clickedItemValue === 'Tab') {
+    const tabValue = '    ';
+    textFromTextArea = textFromTextArea.slice(0, cursorPosition) + tabValue
+    + textFromTextArea.slice(cursorPosition);
+
+    textArea.value = textFromTextArea;
+    textArea.setSelectionRange(cursorPosition + tabValue.length, cursorPosition + tabValue.length);
+  }
+  // Clicked SHIFT
+  if (clickedItemValue === 'Shift') {
+    console.log('shift');
+  }
+  findPreviousClickedItem();
+  addClassOfClickedItem(e);  
 }
 
 keyboard.addEventListener('click', onKeyboardClickHandler);

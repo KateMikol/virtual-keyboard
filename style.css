@@ -19,6 +19,8 @@ body{
   height: 100px;
 }
 
+
+
 .keyboard__item{
   width: max-content;
   min-width: 40px;
@@ -26,6 +28,10 @@ body{
   background-color: cadetblue;
   display: flex;
   justify-content: center;
+  border-radius: 3px;
+}
+.clicked{
+  background: rgb(59, 114, 202);
 }
 
 .keyboard__item_space{
