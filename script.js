@@ -72,12 +72,17 @@ keyboard.className = `keyboard ${getCurrentLang()}`;
 const title = document.createElement('h1');
 const titleText = document.createTextNode('Virtual Keyboard');
 
+const footer = document.createElement('footer');
+footer.className = 'footer';
+footer.innerHTML = '<p> Created in Windows<p> <p>Change language left Alt+Shift <p>';
+
 header.appendChild(title);
 title.appendChild(titleText);
 document.body.appendChild(header);
 document.body.appendChild(main);
 main.appendChild(textArea);
 main.appendChild(keyboard);
+document.body.appendChild(footer);
 
 let queueFromClickedItems = [];
 let queueFromPressedKeys = [];
@@ -123,32 +128,27 @@ function getItemValue(item) {
 }
 
 const arrOfKeyBoardItems = document.querySelectorAll('.keyboard__item');
-
+const capsLockClassList = document.querySelector('.keyboard__item_CapsLock').classList;
+const shiftClassList = document.querySelector('.keyboard__item_shift').classList;
 function switchToUpperCase() {
-  // const clickedKeyboardItem = getClickedItem(e);
-  if (document.querySelector('.keyboard__item_CapsLock').classList.contains('clicked')) {
-    for (let i = 0; i < arrOfKeyBoardItems.length; i++) {
-      const itemValue = getItemValue(arrOfKeyBoardItems[i]);
-      if (letters.includes(itemValue)) {
-        arrOfKeyBoardItems[i].querySelector('p').textContent = itemValue.toUpperCase();
-      }
+  for (let i = 0; i < arrOfKeyBoardItems.length; i++) {
+    const itemValue = getItemValue(arrOfKeyBoardItems[i]);
+    if (letters.includes(itemValue)) {
+      arrOfKeyBoardItems[i].querySelector('p').textContent = itemValue.toUpperCase();
     }
   }
 }
 
 function switchTolowerCase() {
-  if (!document.querySelector('.keyboard__item_CapsLock').classList.contains('clicked')) {
-    for (let i = 0; i < arrOfKeyBoardItems.length; i++) {
-      const itemValue = getItemValue(arrOfKeyBoardItems[i]);
-      if (letters.includes(itemValue)) {
-        arrOfKeyBoardItems[i].querySelector('p').textContent = itemValue.toLowerCase();
-      }
+  for (let i = 0; i < arrOfKeyBoardItems.length; i++) {
+    const itemValue = getItemValue(arrOfKeyBoardItems[i]);
+    if (letters.includes(itemValue)) {
+      arrOfKeyBoardItems[i].querySelector('p').textContent = itemValue.toLowerCase();
     }
   }
 }
 
 function pressedShift() {
-  document.querySelector('.keyboard__item_shift').classList.add('clicked');
   for (let i = 0; i < arrOfKeyBoardItems.length; i++) {
     if (getCurrentLang() === 'en') {
       arrOfKeyBoardItems[i].querySelector('p').textContent = shiften[i];
@@ -159,7 +159,6 @@ function pressedShift() {
 }
 
 function unactivateShift() {
-  document.querySelector('.keyboard__item_shift').classList.remove('clicked');
   for (let i = 0; i < arrOfKeyBoardItems.length; i++) {
     if (getCurrentLang() === 'en') {
       arrOfKeyBoardItems[i].querySelector('p').textContent = arren[i];
@@ -279,20 +278,36 @@ function onKeyboardClickHandler(e) {
     textArea.setSelectionRange(cursorPosition + tabValue.length, cursorPosition + tabValue.length);
   }
 
+  const clickedShift = document.querySelector('.keyboard__item_shift').classList.contains('clicked');
+  const clickedCapsLock = document.querySelector('.keyboard__item_CapsLock').classList.contains('clicked');
+
   if (clickedItemValue === 'Shift') {
-    if (document.querySelector('.keyboard__item_shift').classList.contains('clicked')) {
-      unactivateShift();
-    } else {
+    shiftClassList.toggle('clicked');
+    if (!clickedShift && !clickedCapsLock) {
       pressedShift();
+    } else if (!clickedShift && clickedCapsLock) {
+      pressedShift();
+      switchTolowerCase();
+    } else if (clickedShift && !clickedCapsLock) {
+      unactivateShift();
+    } else if (clickedShift && clickedCapsLock) {
+      unactivateShift();
+      switchToUpperCase();
+    }
+  } else if (clickedItemValue === 'Caps Lock') {
+    capsLockClassList.toggle('clicked'); //
+    if (!clickedCapsLock && !clickedShift) {
+      switchToUpperCase();
+    } else if (!clickedCapsLock && clickedShift) {
+      switchTolowerCase();
+    } else if (clickedCapsLock && !clickedShift) {
+      switchTolowerCase();
+    } else if (clickedCapsLock && clickedShift) {
+      switchToUpperCase();
     }
   } else {
     addClassOfClickedItem(e);
   }
-
-  //  switchToUpperCase();
-  //  switchTolowerCase();
-
-  // delPreviousClickedItem(); //
 }
 
 keyboard.addEventListener('click', onKeyboardClickHandler);
@@ -313,9 +328,7 @@ document.addEventListener('keydown', (e) => {
   const k = keyCodes.indexOf(e.code);
   const pressedItem = arrayOfKeyBoardItems[k].querySelector('p').textContent;
 
-  if (pressedItem === 'Caps Lock' || pressedItem === 'Shift') {
-    arrayOfKeyBoardItems[k].classList.toggle('clicked');
-  } else {
+  if (pressedItem !== 'Caps Lock' && pressedItem !== 'Shift') {
     arrayOfKeyBoardItems[k].classList.add('clicked');
     setTimeout(delPreviousClickedItem, 250);
   }
@@ -359,14 +372,47 @@ document.addEventListener('keydown', (e) => {
     textArea.value = textFromTextArea;
     textArea.setSelectionRange(cursorPosition + tabValue.length, cursorPosition + tabValue.length);
   }
-  switchToUpperCase();
-  switchTolowerCase();
-  pressedShift();
+
+  const clickedShift = document.querySelector('.keyboard__item_shift').classList.contains('clicked');
+  const clickedCapsLock = document.querySelector('.keyboard__item_CapsLock').classList.contains('clicked');
+
+  if (pressedItem === 'Shift') {
+    shiftClassList.toggle('clicked');
+    if (!clickedShift && !clickedCapsLock) {
+      pressedShift();
+    } else if (!clickedShift && clickedCapsLock) {
+      pressedShift();
+      switchTolowerCase();
+    } else if (clickedShift && !clickedCapsLock) {
+      unactivateShift();
+    } else if (clickedShift && clickedCapsLock) {
+      unactivateShift();
+      switchToUpperCase();
+    }
+  } else if (pressedItem === 'Caps Lock') {
+    capsLockClassList.toggle('clicked');
+    if (!clickedCapsLock && !clickedShift) {
+      switchToUpperCase();
+    } else if (!clickedCapsLock && clickedShift) {
+      switchTolowerCase();
+    } else if (clickedCapsLock && !clickedShift) {
+      switchTolowerCase();
+    } else if (clickedCapsLock && clickedShift) {
+      switchToUpperCase();
+    }
+  }
 });
 
 document.addEventListener('keyup', (e) => {
   if (e.code === 'ShiftLeft') {
+    const clickedCapsLock = document.querySelector('.keyboard__item_CapsLock').classList.contains('clicked');
+
     document.querySelector('.keyboard__item_shift').classList.remove('clicked');
     unactivateShift();
+    if (clickedCapsLock) {
+      switchToUpperCase();
+    } else {
+      switchTolowerCase();
+    }
   }
 });
