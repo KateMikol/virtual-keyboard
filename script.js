@@ -232,6 +232,7 @@ function onKeyboardClickHandler(e) {
     unactivateShift();
     document.querySelector('.keyboard__item_alt').classList.remove('clicked');
     queueFromClickedItems = [];
+    document.querySelector('.keyboard__item_shift').classList.remove('clicked');
     return;
   }
 
