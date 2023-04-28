@@ -88,7 +88,7 @@ let queueFromClickedItems = [];
 let queueFromPressedKeys = [];
 
 function generateKeyboardButtons(arr) {
-  for (let i = 0; i < arr.length; i++) {
+  for (let i = 0; i < arr.length; i += 1) {
     const keyboardItem = document.createElement('div');
     if (arr[i] === ' ') {
       keyboardItem.className = 'keyboard__item keyboard__item_space';
@@ -131,7 +131,7 @@ const arrOfKeyBoardItems = document.querySelectorAll('.keyboard__item');
 const capsLockClassList = document.querySelector('.keyboard__item_CapsLock').classList;
 const shiftClassList = document.querySelector('.keyboard__item_shift').classList;
 function switchToUpperCase() {
-  for (let i = 0; i < arrOfKeyBoardItems.length; i++) {
+  for (let i = 0; i < arrOfKeyBoardItems.length; i += 1) {
     const itemValue = getItemValue(arrOfKeyBoardItems[i]);
     if (letters.includes(itemValue)) {
       arrOfKeyBoardItems[i].querySelector('p').textContent = itemValue.toUpperCase();
@@ -140,7 +140,7 @@ function switchToUpperCase() {
 }
 
 function switchTolowerCase() {
-  for (let i = 0; i < arrOfKeyBoardItems.length; i++) {
+  for (let i = 0; i < arrOfKeyBoardItems.length; i += 1) {
     const itemValue = getItemValue(arrOfKeyBoardItems[i]);
     if (letters.includes(itemValue)) {
       arrOfKeyBoardItems[i].querySelector('p').textContent = itemValue.toLowerCase();
@@ -149,7 +149,7 @@ function switchTolowerCase() {
 }
 
 function pressedShift() {
-  for (let i = 0; i < arrOfKeyBoardItems.length; i++) {
+  for (let i = 0; i < arrOfKeyBoardItems.length; i += 1) {
     if (getCurrentLang() === 'en') {
       arrOfKeyBoardItems[i].querySelector('p').textContent = shiften[i];
     } else {
@@ -159,7 +159,7 @@ function pressedShift() {
 }
 
 function unactivateShift() {
-  for (let i = 0; i < arrOfKeyBoardItems.length; i++) {
+  for (let i = 0; i < arrOfKeyBoardItems.length; i += 1) {
     if (getCurrentLang() === 'en') {
       arrOfKeyBoardItems[i].querySelector('p').textContent = arren[i];
     } else {
@@ -174,14 +174,14 @@ function changeLang() {
     keyboardElem.classList.remove('en');
     keyboardElem.classList.add('ru');
     localStorage.setItem('lang', 'ru');
-    for (let i = 0; i < arrOfKeyBoardItems.length; i++) {
+    for (let i = 0; i < arrOfKeyBoardItems.length; i += 1) {
       arrOfKeyBoardItems[i].querySelector('p').textContent = arrru[i];
     }
   } else {
     keyboardElem.classList.remove('ru');
     keyboardElem.classList.add('en');
     localStorage.setItem('lang', 'en');
-    for (let i = 0; i < arrOfKeyBoardItems.length; i++) {
+    for (let i = 0; i < arrOfKeyBoardItems.length; i += 1) {
       arrOfKeyBoardItems[i].querySelector('p').textContent = arren[i];
     }
   }
@@ -189,7 +189,7 @@ function changeLang() {
 
 function delPreviousClickedItem() {
   const arrOfClickedItems = document.querySelectorAll('.clicked');
-  for (let i = 0; i < arrOfClickedItems.length; i++) {
+  for (let i = 0; i < arrOfClickedItems.length; i += 1) {
     const valueOfItemWithClickedClass = arrOfClickedItems[i].querySelector('p').textContent;
     if (valueOfItemWithClickedClass !== 'Caps Lock' && valueOfItemWithClickedClass !== 'Shift') {
       arrOfClickedItems[i].classList.remove('clicked');
@@ -295,7 +295,7 @@ function onKeyboardClickHandler(e) {
       switchToUpperCase();
     }
   } else if (clickedItemValue === 'Caps Lock') {
-    capsLockClassList.toggle('clicked'); //
+    capsLockClassList.toggle('clicked');
     if (!clickedCapsLock && !clickedShift) {
       switchToUpperCase();
     } else if (!clickedCapsLock && clickedShift) {
